@@ -42,7 +42,6 @@ class App extends Component {
 		base.removeBinding(this.ref);
 	}
 
-
 	addFish = fish => {
 		// 1. make a copy of existing state
 		const fishes = {...this.state.fishes};
