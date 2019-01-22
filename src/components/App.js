@@ -5,16 +5,43 @@ import Header from './Header';
 import Inventory from "./Inventory";
 import Order from "./Order";
 import Fish from './Fish';
+import base from '../base'
 import sampleFishes from '../sample-fishes';
-import { timingSafeEqual } from 'crypto';
+
 
 
 class App extends Component {
-
 	state = {
 		fishes: {},
 		order: {}
 	}
+	componentDidMount(){
+		const {params} = this.props.match;
+
+		// first reinstate our local storage
+		const localStorageRef = localStorage.getItem(params.storeId);
+		if(localStorageRef){
+			console.log(localStorageRef);
+			this.setState({
+				order: JSON.parse(localStorageRef)
+			})
+		}
+
+		this.ref = base.syncState(`${params.storeId}/fishes`,
+		{
+		context: this,
+		state: "fishes"
+		});
+	}
+
+	componentDidUpdate(){
+		localStorage.setItem( this.props.match.params.storeId, JSON.stringify(this.state.order));
+		}
+
+	componentWillUnmount(){
+		base.removeBinding(this.ref);
+	}
+
 
 	addFish = fish => {
 		// 1. make a copy of existing state
