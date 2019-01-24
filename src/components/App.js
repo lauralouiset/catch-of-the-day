@@ -13,7 +13,7 @@ import sampleFishes from '../sample-fishes';
 class App extends Component {
 	state = {
 		fishes: {},
-		order: {}
+		order: {},
 	}
 	componentDidMount(){
 		const {params} = this.props.match;
@@ -21,7 +21,6 @@ class App extends Component {
 		// first reinstate our local storage
 		const localStorageRef = localStorage.getItem(params.storeId);
 		if(localStorageRef){
-			console.log(localStorageRef);
 			this.setState({
 				order: JSON.parse(localStorageRef)
 			})
@@ -51,6 +50,21 @@ class App extends Component {
 		this.setState({fishes});
 	}
 
+	updateFish = (key, updatedFish) => {
+		const fishes = this.state.fishes;
+		fishes[key] = updatedFish;
+		this.setState({fishes});
+	}
+
+	deleteFish = key => {
+
+		const fishes = {...this.state.fishes};
+		// to remove an item from Firebase, you have to set it to 'null'
+		fishes[key] = null;
+		this.setState({fishes})
+
+	}
+
 	loadSampleFishes = () => {
 		this.setState({fishes : sampleFishes});
 	}
@@ -62,6 +76,12 @@ class App extends Component {
 			order[key] = order[key] + 1 || 1;
 		// 3. call setState to update our state object
 		this.setState({order});
+	}
+
+	removeFromOrder = key => {
+		const order = {...this.state.order}
+		delete order[key]
+		this.setState({order})
 	}
 
 	render() {
@@ -81,10 +101,16 @@ class App extends Component {
 				</div>
 					<Order 
 							fishes={this.state.fishes} 
-							order={this.state.order} />
+							order={this.state.order}
+							removeFromOrder={this.removeFromOrder} 
+					/>
 					<Inventory 
 							addFish={this.addFish} 
-							loadSampleFishes={this.loadSampleFishes} />
+							updateFish={this.updateFish}
+							deleteFish={this.deleteFish}
+							loadSampleFishes={this.loadSampleFishes}
+							fishes={this.state.fishes} 
+						/>
 			</div>
 		)
 	}

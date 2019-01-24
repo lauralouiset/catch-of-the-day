@@ -2,7 +2,7 @@ import React from 'react';
 
 const NotFound = () => (
 	<div>
-		<h2>Store Not FOund</h2>
+		<h2>Store Not Found</h2>
 	</div>
 )
 
